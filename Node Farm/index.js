@@ -1,20 +1,38 @@
-const http = require('http');
+const express = require('express');
 const fs = require('fs');
 const url = require('url');
+
+const app = express();
 const port = 3000;
 
-const data = fs.readFileSync(`${__dirname}/dev-data/data.json`);
-const oData = JSON.parse(data);
+//  READING  TEMPLATE FILES & LOCAL API
+const tempCard = fs.readFileSync(
+    `${__dirname}/templates/template-card.html`,
+    'utf-8'
+);
+const tempOverview = fs.readFileSync(
+    `${__dirname}/templates/template-overview.html`,
+    'utf-8'
+);
+const tempProduct = fs.readFileSync(
+    `${__dirname}/templates/template-product.html`,
+    'utf-8'
+);
+const data = JSON.parse(
+    fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8')
+);
 
-const server = http.createServer((req, res) => {
-    const { query, pathname } = url.parse(req.url, true);
-    if (pathname == '/' || pathname == '/overview') {
-        res.writeHead(200, { 'content-type': 'app/json' });
-
-        res.end(data);
-    }
+// ROUTING
+app.get('/', (req, res) => {
+    console.log(data.length);
+    res.send(tempOverview);
 });
 
-server.listen(port, () => {
-    console.log(`server is currently listening to port ${port} ...`);
+app.get('/product' || 'Okay', (req, res) => {
+    res.send(tempProduct);
+});
+
+// LISTENING TO SERVER
+app.listen(port, () => {
+    console.log(`Hello from port ${port}`);
 });
