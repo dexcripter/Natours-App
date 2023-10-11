@@ -53,5 +53,16 @@
     "price": "2.00",
     "organic": false,
     "description": "Also known as maize, corn is one of the most popular cereal grains in the world. Popcorn and sweet corn are commonly eaten varieties, but refined corn products are also widely consumed, frequently as ingredients in foods. These include tortillas, tortilla chips, polenta, cornmeal, corn flour, corn syrup, and corn oil. Whole-grain corn is as healthy as any cereal grain, rich in fiber and many vitamins, minerals, and antioxidants."
+  },
+  {
+    "id": 5,
+    "productName": "Oranges",
+    "image": "🍊️",
+    "from": "Ghana",
+    "nutrients": "Vitamin C, potassium",
+    "quantity": "10 🍊️",
+    "price": "3",
+    "organic": true,
+    "description": "Oranges are a type of citrus fruit that are known for their sweet, juicy flesh and bright orange color. They are a good source of vitamin C, potassium, and fiber. Oranges are also low in calories and fat. Oranges can be eaten fresh, juiced, or used in a variety of cooked dishes. They are a popular ingredient in smoothies, salads, desserts, and main dishes. Oranges are also used to make orange juice, orange zest, and orange marmalade."
   }
 ]
