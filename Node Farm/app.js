@@ -1,7 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const app = express();
-const port = 3000;
+const port = 3030;
 app.use(express.json());
 
 // READING FILES
@@ -11,7 +11,7 @@ const tempOverview = fs.readFileSync(
     `${__dirname}/templates/overview-template.html`,
     'utf-8'
 );
-const prodOverview = fs.readFileSync(
+const tempProduct = fs.readFileSync(
     `${__dirname}/templates/product-template.html`,
     'utf-8'
 );
@@ -30,13 +30,37 @@ function replaceFxn(temp, prod) {
     output = output.replace(/{%IMAGE%}/g, prod.image);
     output = output.replace(/{%id%}/g, prod.id);
     output = output.replace(/{%PRICE%}/g, prod.price);
-    console.log(output);
+
+    if (!prod.organic) output.replace(/{%NOT-ORGANIC%}/g, 'not-organic');
+    return output;
 }
 
 app.get('/', (req, res) => {
-    console.log(devDataObj);
-    let prototype = devDataObj.map((el) => replaceFxn(tempCard, el));
-    res.send(prototype);
+    const prototype = devDataObj.map((el) => replaceFxn(tempCard, el)).join();
+    const display = tempOverview.replace(/{%TEMPLATE-CARD%}/, prototype);
+    console.log(display);
+    res.send(display);
+});
+
+app.get('/overview', (req, res) => {
+    const prototype = devDataObj.map((el) => replaceFxn(tempCard, el)).join();
+    const display = tempOverview.replace(/{%TEMPLATE-CARD%}/, prototype);
+    console.log(display);
+    res.send(display);
+});
+
+app.get('/product/:id', (req, res) => {
+    const desiredId = devDataObj[req.params.id];
+    console.log(desiredId);
+    let replace = tempProduct;
+    replace = replace.replace(/{%DESCRIPTION%}/g, desiredId.description);
+    replace = replace.replace(/{%NAME%}/g, desiredId.productName);
+    replace = replace.replace(/{%IMAGE%}/g, desiredId.image);
+    replace = replace.replace(/{%DESTINATION%}/g, desiredId.from);
+    replace = replace.replace(/{%PRICE%}/g, desiredId.price);
+    replace = replace.replace(/{%VITAMINS%}/g, desiredId.nutrients);
+    replace = replace.replace(/{%QUANTITY%}/g, desiredId.quantity);
+    res.end(replace);
 });
 
 app.listen(port, () => {
