@@ -5,11 +5,6 @@ const router = express.Router();
 
 router.param('id', tourController.checkID);
 
-router.param('id', (req, res, next, val) => {
-  console.log(`The tour id is ${val}`);
-  next();
-});
-
 router
   .route('/:id')
   .get(tourController.getTour)
@@ -18,6 +13,6 @@ router
 router
   .route('/')
   .get(tourController.getAllTours)
-  .post(tourController.createTour);
+  .post(tourController.updateTourBody, tourController.createTour);
 
 module.exports = router;
