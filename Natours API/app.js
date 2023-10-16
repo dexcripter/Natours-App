@@ -2,7 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const app = express();
 
-console.log(process.env);
+console.log(process.env.PORT);
 
 app.use(morgan('dev'));
 app.use(express.json());
