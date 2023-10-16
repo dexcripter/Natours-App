@@ -9,7 +9,7 @@ exports.updateTourBody = (req, res, next) => {
     return res
       .status(400)
       .json({ status: 'Error', message: 'Name or Price missing!' });
-  } else console.log('YEahh');
+  } else console.log('Yeahh, works');
   next();
 };
 
@@ -17,7 +17,7 @@ exports.checkID = (req, res, next, val) => {
   if (val * 1 > tours.length) {
     return res
       .status(404)
-      .json({ status: 'page not found', message: 'checck URL' });
+      .json({ status: 'page not found', message: 'check URL' });
   }
   next();
 };
