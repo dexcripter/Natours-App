@@ -31,6 +31,7 @@ const importData = async () => {
     process.exit();
   } catch (err) {
     console.log(err);
+    process.exit();
   }
 };
 
@@ -42,6 +43,7 @@ const deleteData = async () => {
     process.exit();
   } catch (err) {
     console.log(err);
+    process.exit();
   }
 };
 
