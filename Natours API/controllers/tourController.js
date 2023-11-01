@@ -2,16 +2,28 @@
 const Tour = require('./../models/tourModel');
 const APIFeatures = require('./../utils/apiFeatures');
 
-exports.aliasTopTours = async (req, res, next) => {
-  try {
-    req.query.limit = '5';
-    req.query.sort = 'ratingsAverage,price';
-    req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
-    next();
-  } catch (err) {
-    res.status(200).json({ status: 'error', err });
-  }
+// eslint-disable-next-line arrow-body-style
+const catchAsync = (fn) => {
+  return (req, res, next) => {
+    fn(req, res, next).catch((err) => next(err));
+  };
 };
+
+exports.aliasTopTours = catchAsync(async (req, res, next) => {
+  req.query.limit = '5';
+  req.query.sort = 'ratingsAverage,price';
+  req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
+  next();
+
+  // try {
+  //   req.query.limit = '5';
+  //   req.query.sort = 'ratingsAverage,price';
+  //   req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
+  //   next();
+  // } catch (err) {
+  //   res.status(200).json({ status: 'error', err });
+  // }
+});
 
 exports.getAllTours = async (req, res) => {
   try {
