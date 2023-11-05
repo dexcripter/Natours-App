@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-useless-path-segments
 const Tour = require('./../models/tourModel');
-const APIFeatures = require('./../utils/apiFeatures');
+const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('../utils/catchAsync');
 
 exports.aliasTopTours = catchAsync(async (req, res, next) => {
