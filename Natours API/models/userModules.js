@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -15,6 +16,11 @@ const userSchema = new mongoose.Schema({
     validate: [validator.isEmail, 'Please provide a valid email'],
   },
   photo: String,
+  role: {
+    type: String,
+    enum: ['user', 'guide', 'lead-guide', 'admin'],
+    default: 'user',
+  },
   password: {
     type: String,
     required: [true, 'Please provide a password!'],
@@ -52,17 +58,16 @@ userSchema.methods.correctPassword = async function (
 
 userSchema.methods.changePasswordAfter = function (JWTTimeStamp) {
   if (this.passwordChangedAt) {
-    console.log(this.passwordChangedAt.getTime(), 'The magic');
-
     const changedTimestamp = parseInt(
       this.passwordChangedAt.getTime() / 1000,
       10,
     );
-    console.log(changedTimestamp, JWTTimeStamp);
     return JWTTimeStamp < changedTimestamp;
   }
   return false;
 };
+
+userSchema.methods.createPasswordResetToken = function () {};
 
 const User = mongoose.model('User', userSchema);
 

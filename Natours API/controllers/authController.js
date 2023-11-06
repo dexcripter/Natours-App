@@ -94,3 +94,31 @@ exports.protect = catchAsync(async (req, res, next) => {
   req.user = currentUser;
   next();
 });
+
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    // roles is an array of parameters > eg ['admin', 'lead-guide']
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError(
+          'You do not have the permission to perform this action',
+          403,
+        ),
+      );
+    }
+    next();
+  };
+};
+
+exports.forgotPassword = catchAsync(async (req, res, next) => {
+  // 1) Get user based on posted Email
+  const user = await User.findOne({ email: req.bdoy.email });
+  if (!user) {
+    return next(new AppError('There is no user with this email address'));
+  }
+
+  // 2) Generate te random reset
+
+  // 3) send it to the user's email
+});
+exports.resetPassword = (req, res, next) => {};
