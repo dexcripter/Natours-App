@@ -12,7 +12,6 @@ const sendEmail = async (options) => {
     },
     // Activate in gmail "less secure app" option
   });
-
   // 2) DEFINE THE EMAIL OPTIONS
   const mailOptions = {
     from: 'Johnpaul Nnaji <indisputable.jay@gmail.com>',
@@ -22,7 +21,7 @@ const sendEmail = async (options) => {
     // html
   };
   // 3) SENDING THE EMAIL WITH NODEMAILER
-  await transporter.semdMail({ mailOptions });
+  await transporter.sendMail({ mailOptions });
 };
 
 module.exports = sendEmail;
