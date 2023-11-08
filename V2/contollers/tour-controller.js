@@ -38,9 +38,18 @@ exports.createTour = (req, res) => {
 };
 
 exports.updateTour = (req, res) => {
-  res.status(200).json({ status: 'success' });
+  res
+    .status(200)
+    .json({ status: 'success', message: 'Tour updated successfully' });
 };
 
 exports.deleteTour = (req, res) => {
   res.status(204).json({ status: 'success', data: null });
+};
+
+exports.checkId = (req, res, next) => {
+  if (req.params.id > tours.length - 1) {
+    res.status(404).json({ status: 'failed', message: 'Invalid ID' });
+  }
+  next();
 };
