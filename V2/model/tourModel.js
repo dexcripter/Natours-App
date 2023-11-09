@@ -6,6 +6,16 @@ const tourSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
+  difficulty: String,
+  duration: String,
+  maxGroupsize: Number,
+  ratingsAverage: Number,
+  ratingsAuantity: Number,
+  summary: String,
+  description: String,
+  imageCover: String,
+  images: Array,
+  startDates: Array,
   rating: {
     type: Number,
     default: '4.5'

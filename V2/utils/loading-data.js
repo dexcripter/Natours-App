@@ -1,5 +1,5 @@
 const fs = require('fs');
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const Tours = require('../model/tourModel');
 
