@@ -12,10 +12,10 @@ const tourSchema = new mongoose.Schema({
   ratingsAverage: Number,
   ratingsAuantity: Number,
   summary: String,
-  description: String,
+  description: { type: String, trim: true },
   imageCover: String,
-  images: Array,
-  startDates: Array,
+  images: [String],
+  startDates: [Array],
   rating: {
     type: Number,
     default: '4.5'
