@@ -16,8 +16,6 @@ const tourSchema = new mongoose.Schema({
   }
 });
 
-// Whatever you model is the collection (in small letters), so lets create a tour
-// Edited: Actually, its whatever you pass inside the parenthesis that becomes the actual name of the collection/table.
 const Tours = mongoose.model('Tours', tourSchema);
 
 module.exports = Tours;
