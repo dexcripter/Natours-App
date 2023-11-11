@@ -109,3 +109,46 @@ exports.deleteTour = async (req, res) => {
   const tour = await Tour.findByIdAndDelete(req.params.id);
   res.status(204).json({ status: 'success', data: null });
 };
+
+exports.getTourStats = async (req, res) => {
+  try {
+    const stats = await Tour.aggregate([
+      { $match: { ratingsAverage: { $gte: 4.5 } } },
+      {
+        $group: {
+          _id: '$difficulty',
+          numTours: { $sum: 1 },
+          avgRating: { $avg: '$ratingsAverage' },
+          avgPrice: { $avg: '$price' },
+          minPrice: { $min: '$price' },
+          maxPrice: { $max: '$price' }
+        }
+      },
+      { $sort: { avgPrice: -1 } }
+    ]);
+    res.status(201).json({ status: 'success', data: stats });
+  } catch (err) {
+    res.status(404).json({ status: 'error', message: err });
+  }
+};
+
+exports.getMonthlyPlan = async (req, res) => {
+  try {
+    const plan = await Tour.aggregate([
+      { $unwind: '$startDates' },
+      {
+        $match: { startDates: { $gte: '2021-01-01', $lte: '2021-12-31' } }
+      },
+      {
+        $group: {
+          _id: { $month: '$startDates' },
+          numTourStarts: { $sum: 1 },
+          tours: { $push: '$name' }
+        }
+      }
+    ]);
+    res.status(201).json({ status: 'success', data: plan });
+  } catch (err) {
+    res.status(404).json({ status: 'error', message: err });
+  }
+};
