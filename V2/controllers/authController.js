@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const catchAsync = require('../utils/catchAsync');
 const User = require('../models/userModes');
 const AppError = require('../utils/appError');
+const { decode } = require('punycode');
 
 const signToken = id => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -57,7 +58,27 @@ exports.protection = catchAsync(async (req, res, next) => {
 
   // verify token
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  console.log(decoded);
 
+  // Check user
+  const currentUser = await User.findById(decoded.id);
+  if (!currentUser)
+    return next(new AppError('This user no longer exists', 401));
+
+  // check if user chamged password
+  if (currentUser.changePasswordAfter(decoded.iat)) {
+    return next(new AppError('User recently changed password. Log in again'));
+  }
+
+  // GRANT ACCESS
+  req.user = currentUser;
   next();
 });
+
+exports.restictTo = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return next(new AppError('You do not have permission', 403));
+    }
+    next();
+  };
+};
