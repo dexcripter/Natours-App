@@ -8,6 +8,9 @@ router.route('/signup').post(authController.signup);
 router.route('/login').post(authController.login);
 router.route('/resetpassword/:token').patch(authController.resetPassword);
 router.route('/forgotpassword').post(authController.forgotPassword);
+router
+  .route('/updatepassword')
+  .patch(authController.protection, authController.updatePassword);
 
 // RESTFUL APIs
 router
