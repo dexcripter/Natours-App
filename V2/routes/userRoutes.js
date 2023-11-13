@@ -11,6 +11,13 @@ router.route('/forgotpassword').post(authController.forgotPassword);
 router
   .route('/updatepassword')
   .patch(authController.protection, authController.updatePassword);
+router
+  .route('/updateme')
+  .patch(authController.protection, userController.updateMe);
+
+router
+  .route('/deleteme')
+  .delete(authController.protection, userController.deleteMe);
 
 // RESTFUL APIs
 router

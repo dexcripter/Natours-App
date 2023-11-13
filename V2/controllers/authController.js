@@ -71,6 +71,7 @@ exports.protection = catchAsync(async (req, res, next) => {
 
   // GRANT ACCESS
   req.user = currentUser;
+  console.log(req.user.id);
   next();
 });
 
