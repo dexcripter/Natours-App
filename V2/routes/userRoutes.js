@@ -10,14 +10,14 @@ router.route('/resetpassword/:token').patch(authController.resetPassword);
 router.route('/forgotpassword').post(authController.forgotPassword);
 router
   .route('/updatepassword')
-  .patch(authController.protection, authController.updatePassword);
+  .patch(authController.protect, authController.updatePassword);
 router
   .route('/updateme')
-  .patch(authController.protection, userController.updateMe);
+  .patch(authController.protect, userController.updateMe);
 
 router
   .route('/deleteme')
-  .delete(authController.protection, userController.deleteMe);
+  .delete(authController.protect, userController.deleteMe);
 
 // RESTFUL APIs
 router
