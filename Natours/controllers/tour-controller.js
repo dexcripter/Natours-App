@@ -1,6 +1,4 @@
-const { match } = require('assert');
 const fs = require('fs');
-const { materialize } = require('rxjs');
 
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)

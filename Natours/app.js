@@ -4,13 +4,15 @@ const morgan = require('morgan');
 const apiV1 = require('./api-versioning/apiV1');
 
 const app = express();
-const port = 3000;
 
 // middlewares
+// app.use(express.static('./public'));
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
 app.use(express.json());
-app.use(morgan('dev'));
+
+// routing
 app.use('/api/v1', apiV1);
 
-app.listen(port, () => {
-  console.log(`server is currently listening to port ${port}`);
-});
+module.exports = app;
