@@ -33,7 +33,6 @@ exports.createTour = (req, res, next) => {
 
 exports.findTour = (req, res, next) => {
   const { id } = req.params;
-
   const matchingTour = tours[id];
 
   res.status(200).json({ data: matchingTour });
