@@ -9,12 +9,8 @@ const app = require('./app');
 // console.log(process.env);
 
 mongoose
-  .connect(process.env.DATABASE, {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useFindAndModify: false
-  })
-  .then(con => console.log('Connected to the databsae 🚀'));
+  .connect(process.env.DATABASE, {})
+  .then((con) => console.log('Connected to the databsae 🚀'));
 
 const port = 3000;
 app.listen(port, () => {
