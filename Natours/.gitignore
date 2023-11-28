@@ -1,6 +1,6 @@
 .hidden
-node_modules
 config.env
 eslintrc.json
 .prettierrc
 public
+node_modules
