@@ -1,6 +1,6 @@
-const { query } = require('express');
 const mongoose = require('mongoose');
-const slug = require('slug');
+const slugify = require('slug');
+const validator = require('validator');
 
 const tourSchema = mongoose.Schema(
   {
@@ -8,6 +8,9 @@ const tourSchema = mongoose.Schema(
       type: String,
       required: [true, 'A tour requires a name!'],
       unique: [true],
+      maxlength: [35, 'A tour name must have less or equal than 35 characters'],
+      minlength: [10, 'A tour name must have more or equal than 10 characters'],
+      // validate: [validator.isAlpha, 'Tour name must only contain characters'],
     },
     slug: String,
     ratingsAverage: {
@@ -29,7 +32,10 @@ const tourSchema = mongoose.Schema(
     },
     difficulty: {
       type: String,
-      enum: ['easy', 'medium', 'difficult'],
+      enum: {
+        values: ['easy', 'medium', 'difficult'],
+        message: 'Difficulty is either: easy, medium or difficult',
+      },
     },
     ratingsQuantity: {
       type: Number,
@@ -37,6 +43,10 @@ const tourSchema = mongoose.Schema(
     },
     priceDiscount: {
       type: Number,
+      validate: function (val) {
+        // always remember this points to current doc on NEW document creation
+        return val < this.price;
+      },
     },
     summary: {
       type: String,
@@ -76,7 +86,7 @@ tourSchema.pre('save', function (next) {
 });
 
 // query middleware
-tourSchema.pre(/^find/, function (docs, next) {
+tourSchema.pre(/^find/, function (next) {
   this.start = Date.now();
   next();
 });
