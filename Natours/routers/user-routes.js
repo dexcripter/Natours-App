@@ -5,19 +5,18 @@ const {
   deleteUser,
   getAllUser,
   updateUser,
-  createUser
+  createUser,
 } = require('../controllers/user-controller.js');
+
+const { signup, signin } = require('../controllers/auth-controller.js');
 
 const router = express.Router();
 
-router
-  .route('/')
-  .get(getAllUser)
-  .post(createUser);
-router
-  .route('/:id')
-  .get(getUser)
-  .patch(updateUser)
-  .delete(deleteUser);
+//auths
+router.post('/signup', signup);
+router.post('/signin', signin);
+
+router.route('/').get(getAllUser).post(createUser);
+router.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
 
 module.exports = router;

@@ -10,7 +10,10 @@ const app = require('./app');
 
 mongoose
   .connect(process.env.DATABASE, {})
-  .then((con) => console.log('Connected to the databsae 🚀'));
+  .then((con) => console.log('Connected to the databsae 🚀'))
+  .catch((err) =>
+    console.log('oops, there was an error connecting to the database. 🔥')
+  );
 
 const port = 3000;
 app.listen(port, () => {
