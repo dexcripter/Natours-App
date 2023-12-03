@@ -60,5 +60,33 @@ exports.protect = catchAsync(async (req, res, next) => {
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
   // const decodeds = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
+  const currentUser = await User.findById(decoded.id);
+  if (!currentUser) {
+    return next(new Error('The user does not exist'));
+  }
+
+  // check if the user changed password after jwt was issues
+  if (currentUser.changedPasswordAfter(decoded.iat)) {
+    return next(
+      new AppError('User recently changed password! Please log in!', 401)
+    );
+  }
+  req.loggedUser = currentUser;
   next();
 });
+
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    // roles is an array of allowed roles
+
+    if (!roles.includes(req.loggedUser.role)) {
+      return next(
+        new AppError(
+          'You do not have permission to perform this operation',
+          403
+        )
+      );
+    }
+    next();
+  };
+};
