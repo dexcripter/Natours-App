@@ -2,6 +2,7 @@ const User = require('../models/user-model');
 const catchAsync = require('../utils/catchAsync');
 const jwt = require('jsonwebtoken');
 const AppError = require('../utils/appError');
+const { promisify } = require('util');
 
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
@@ -45,12 +46,19 @@ exports.login = catchAsync(async (req, res, next) => {
 
 exports.protect = catchAsync(async (req, res, next) => {
   // check if the token is present
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    [type, token] = req.headers.authorization.split(' ');
+  }
 
-  // token verification
-
-  // check if user still exists
-
-  // check if user changed password after token has been issued
+  if (!token) {
+    return next(new AppError('Please login to access this route', 403));
+  }
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  // const decodeds = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
   next();
 });
