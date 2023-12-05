@@ -32,7 +32,7 @@ const userSchema = mongoose.Schema({
   },
   passwordConfirm: {
     type: String,
-    required: [true, 'Please confirm your email'],
+    required: [true, 'Please confirm your password'],
     minlength: 8,
     maxlength: 25,
     validate: {
@@ -59,8 +59,7 @@ userSchema.pre('save', function () {
   if (!this.isModified('password') || this.isNew) {
     return next();
   }
-  this.passwordChangedAt = Date.now() - 2000;
-  next();
+  this.passwordChangedAt = Date.now() - 1000;
 });
 
 userSchema.methods.verifyPassword = async function (
@@ -89,13 +88,6 @@ userSchema.methods.createPasswordResetToken = async function () {
     .update(resetToken)
     .digest('hex');
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
-
-  console.log(
-    { resetToken },
-    this.passwordResetToken,
-    this.passwordResetExpires
-  );
-
   return resetToken;
 };
 
