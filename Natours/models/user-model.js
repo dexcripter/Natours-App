@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
+const AppError = require('../utils/appError');
 
 const userSchema = mongoose.Schema({
   name: {
@@ -42,6 +43,11 @@ const userSchema = mongoose.Schema({
       },
       message: 'Passwords are not the same!',
     },
+    active: {
+      type: Boolean,
+      default: true,
+      select: false,
+    },
   },
   passwordChangedAt: Date,
   passwordResetToken: String,
@@ -55,11 +61,16 @@ userSchema.pre('save', async function (next) {
   this.passwordConfirm = undefined;
 });
 
-userSchema.pre('save', function () {
-  if (!this.isModified('password') || this.isNew) {
-    return next();
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password') || !this.isNew) {
+    return next(new AppError('Passowrd has recently been modified', 401));
   }
   this.passwordChangedAt = Date.now() - 1000;
+});
+
+userSchema.pre(/^find/, function (next) {
+  this.find({ active: { $ne: false } });
+  next();
 });
 
 userSchema.methods.verifyPassword = async function (

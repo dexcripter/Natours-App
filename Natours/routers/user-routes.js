@@ -29,6 +29,6 @@ router.patch('/updatepassword', protect, updatePassword);
 router.patch('/updateme', updateMe);
 
 router.route('/').get(getAllUser).post(createUser);
-router.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
+router.route('/:id').get(getUser).patch(updateUser).delete(protect, deleteUser);
 
 module.exports = router;

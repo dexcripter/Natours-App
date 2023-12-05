@@ -9,12 +9,16 @@ exports.getAllUser = catchAsync(async (req, res, next) => {
   const users = await User.find();
   res.status(200).json({ status: 'success', users });
 });
-exports.createUser = (req, res, next) => {
+exports.createUser = catchAsync(async (req, res, next) => {
   res.send('this route has not yet been defined');
-};
-exports.deleteUser = (req, res, next) => {
-  res.send('this route has not yet been defined');
-};
+});
+
+exports.deleteUser = catchAsync(async (req, res, next) => {
+  const user = findByIdAndUpdate(req.loggedUser._id, { active: false });
+
+  res.status(204).json({ status: 'success', data: null });
+});
+
 exports.updateUser = (req, res, next) => {
   res.send('this route has not yet been defined');
 };
