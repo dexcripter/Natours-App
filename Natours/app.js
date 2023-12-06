@@ -19,7 +19,14 @@ app.use(mongoSanitize());
 app.use(xss());
 app.use(
   hpp({
-    whitelist: ['duration'],
+    whitelist: [
+      'duration',
+      'ratingsAverage',
+      'difficulty',
+      'maxGroupSize',
+      'prize',
+      'ratingsQuantity',
+    ],
   })
 );
 
