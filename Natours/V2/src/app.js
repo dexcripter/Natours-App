@@ -8,6 +8,7 @@ const version1 = require('./versioning/versionone');
 // middlewares
 const app = express();
 app.use(morgan('dev'));
+app.use(express.json());
 
 // routes
 app.use('/api/v1/', version1);
