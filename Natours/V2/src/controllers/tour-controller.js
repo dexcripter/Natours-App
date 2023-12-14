@@ -12,14 +12,20 @@ exports.getTours = async (req, res, next) => {
 };
 
 exports.createTour = async (req, res, next) => {
-  const name = req.body.name;
-  const price = req.body.price;
-  const difficulty = req.body.difficulty;
+  try {
+    const body = {
+      name: req.body.name,
+      price: req.body.price,
+      difficulty: req.body.difficulty,
+    };
 
-  const newTour = await Tour.create(req.body);
-  console.log(newTour);
+    const newTour = await Tour.create(body);
 
-  res.status(200).json({ status: 'success', data: { newTour } });
+    // response
+    res.status(200).json({ status: 'success', data: { newTour } });
+  } catch (err) {
+    res.status(400).json({ status: 'fail', message: err.message });
+  }
 };
 
 exports.getTour = async (req, res, next) => {
