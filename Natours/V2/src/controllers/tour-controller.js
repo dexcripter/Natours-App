@@ -1,50 +1,37 @@
-const fs = require('fs');
+const Tour = require('../model/tour-model');
 
-const data = JSON.parse(
-  fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
-);
-
-exports.getTours = (req, res, next) => {
-  console.log('fetch');
+exports.getTours = async (req, res, next) => {
+  const tours = await Tour.find();
   res.status(200).json({
     status: 'success',
     data: {
-      results: data.length,
-      tours: data,
+      results: tours.length,
+      tours: tours,
     },
   });
 };
 
-exports.createTour = (req, res, next) => {
+exports.createTour = async (req, res, next) => {
   const name = req.body.name;
   const price = req.body.price;
   const difficulty = req.body.difficulty;
 
-  if (!name || !price || !difficulty) {
-    return res.status(300).json({
-      status: 'invalid',
-      message: 'please specify the name, price, and difficulty of the tour',
-    });
-  }
-  const newId = data[data.length - 1].id + 1;
-  const newTour = Object.assign({ id: newId }, { name, price, difficulty });
-  data.push(newTour);
-
-  fs.writeFileSync(
-    `${__dirname}/../dev-data/data/tours-simple.json`,
-    JSON.stringify(data)
-  );
+  const newTour = await Tour.create(req.body);
+  console.log(newTour);
 
   res.status(200).json({ status: 'success', data: { newTour } });
 };
 
-exports.getTour = (req, res, next) => {
+exports.getTour = async (req, res, next) => {
   const id = Number(req.params.id);
-  const tour = data.at(id);
+  const tour = await Tour.findById(id);
 
   res.status(201).json({ status: 'sucess', data: { tour } });
 };
 
 exports.deleteTour = (req, res, next) => {
-  res.send('deleted');
+  res.status(204);
+};
+exports.updateTour = (req, res, next) => {
+  res.status(201).json({ success: 'true' });
 };
