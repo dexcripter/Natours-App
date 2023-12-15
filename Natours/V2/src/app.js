@@ -13,5 +13,9 @@ app.use(express.json());
 // routes
 app.use('/api/v1/', version1);
 
+app.all('*', (req, res, next) => {
+  res.status(403).json({ status: 'not found' });
+});
+
 // exporting the app to server
 module.exports = app;
