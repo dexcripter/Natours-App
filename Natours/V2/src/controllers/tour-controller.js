@@ -1,32 +1,16 @@
 const Tour = require('../model/tour-model');
+const ApiFeatures = require('../utils/APIfeatures');
 
 exports.getTours = async (req, res, next) => {
   try {
-    // filtering query
-    let queryObj = { ...req.query };
-    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    const features = new ApiFeatures(Tour.find(), req.query)
+      .filter()
+      .limitFields()
+      .paginate()
+      .sort();
 
-    // advanced filtering
-    excludedFields.forEach((el) => delete queryObj[el]);
-    let queryStr = JSON.stringify(queryObj);
-    queryStr = queryStr.replace(/\b(lt|lte|gt|gte)\b/g, (match) => `$${match}`);
-    queryObj = JSON.parse(queryStr);
+    const tours = await features.query;
 
-    let query = Tour.find(queryObj);
-
-    // sorting
-    if (req.query.sort) {
-      const sortBy = req.query.sort.split(',').join(' ');
-      query = query.sort(sortBy);
-    } else {
-      query = query.sort('-createdAt');
-    }
-
-    if (req.query.fields) {
-      query = query.select(req.query.fields);
-    }
-
-    const tours = await query;
     res.status(200).json({
       status: 'success',
       data: {
