@@ -16,7 +16,7 @@ mongoose
     console.log('there was an error', err.message);
   });
 
-const port = 4444;
+const port = 4040;
 server.listen(port, () => {
   console.log(`Server is currently running on port ${port}`);
 });
