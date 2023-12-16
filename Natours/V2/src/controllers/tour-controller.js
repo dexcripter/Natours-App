@@ -42,6 +42,8 @@ exports.createTour = async (req, res, next) => {
 
 exports.getTour = async (req, res, next) => {
   const tour = await Tour.findById(req.params.id);
+
+  if (!tour) return next();
   res.status(201).json({ status: 'sucess', data: { tour } });
 };
 
