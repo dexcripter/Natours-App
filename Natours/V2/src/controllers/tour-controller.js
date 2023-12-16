@@ -1,6 +1,7 @@
 const Tour = require('../model/tour-model');
 const ApiFeatures = require('../utils/APIfeatures');
 const catchAsync = require('../utils/catchAsync.js');
+const AppError = require('../utils/appError');
 
 exports.getTours = catchAsync(async (req, res, next) => {
   const features = new ApiFeatures(Tour.find(), req.query)
@@ -20,6 +21,17 @@ exports.getTours = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getTour = catchAsync(async (req, res, next) => {
+  const tour = await Tour.findById(req.params.id);
+
+  if (!tour) {
+    const err = new AppError('No tour found with that ID', 404);
+    return next(err);
+  }
+
+  res.status(201).json({ status: 'sucess', data: { tour } });
+});
+
 exports.createTour = catchAsync(async (req, res, next) => {
   const body = {
     name: req.body.name,
@@ -32,15 +44,12 @@ exports.createTour = catchAsync(async (req, res, next) => {
   res.status(200).json({ status: 'success', data: { newTour } });
 });
 
-exports.getTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findById(req.params.id);
-
-  if (!tour) return next();
-  res.status(201).json({ status: 'sucess', data: { tour } });
-});
-
 exports.deleteTour = catchAsync(async (req, res, next) => {
-  await Tour.findByIdAndDelete(req.params.id);
+  const tour = await Tour.findByIdAndDelete(req.params.id);
+  if (!tour) {
+    const err = new AppError('No tour found with that ID', 404);
+    return next(err);
+  }
   res.status(204).json({ status: 'true' });
 });
 
@@ -50,10 +59,15 @@ exports.updateTour = catchAsync(async (req, res, next) => {
     price: req.body.price,
     difficulty: req.body.difficulty,
   };
-  const updatedTour = await Tour.findByIdAndUpdate(req.params.id, body, {
+  const tour = await Tour.findByIdAndUpdate(req.params.id, body, {
     new: true,
     runValidators: true,
   });
+
+  if (!tour) {
+    const err = new AppError('No tour found with that ID', 404);
+    return next(err);
+  }
 
   res.status(200).json({ status: 'success', data: updatedTour });
 });
