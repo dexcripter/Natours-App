@@ -2,6 +2,7 @@
 const express = require('express');
 const morgan = require('morgan');
 
+const globalErrorHandling = require('./utils/global-error-handling.js');
 const AppError = require('./utils/appError.js');
 
 // versioning the api
@@ -16,13 +17,14 @@ app.use(express.json());
 app.use('/api/v1/', version1);
 
 app.all('*', (req, res, next) => {
-  const error = new Error(`Can't find ${req.originalUrl} on this server`);
-  error.statusCode = 404;
-  error.status = 'Not found';
-  next(error);
+  // const error = new Error(`Can't find ${req.originalUrl} on this server`);
+  // error.statusCode = 404;
+  // error.status = 'Not found';
+
+  next(new AppError(`Can't find ${req.originalUrl} on this server`), 404);
 });
 
-app.use(AppError);
+app.use(globalErrorHandling);
 
 // exporting the app to server
 module.exports = app;

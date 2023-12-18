@@ -1,7 +1,9 @@
 const Tour = require('../model/tour-model');
 const ApiFeatures = require('../utils/APIfeatures');
 const catchAsync = require('../utils/catchAsync.js');
+const AppError = require('../utils/appError');
 
+// FETCHING ALL TOURS
 exports.getTours = catchAsync(async (req, res, next) => {
   const features = new ApiFeatures(Tour.find(), req.query)
     .filter()
@@ -20,6 +22,7 @@ exports.getTours = catchAsync(async (req, res, next) => {
   });
 });
 
+// FETCHING TOUR
 exports.getTour = catchAsync(async (req, res, next) => {
   const tour = await Tour.findById(req.params.id);
 
@@ -31,6 +34,7 @@ exports.getTour = catchAsync(async (req, res, next) => {
   res.status(201).json({ status: 'sucess', data: { tour } });
 });
 
+// CREATING TOUR
 exports.createTour = catchAsync(async (req, res, next) => {
   const body = {
     name: req.body.name,
@@ -43,15 +47,17 @@ exports.createTour = catchAsync(async (req, res, next) => {
   res.status(200).json({ status: 'success', data: { newTour } });
 });
 
+// DELETING TOUR
 exports.deleteTour = catchAsync(async (req, res, next) => {
   const tour = await Tour.findByIdAndDelete(req.params.id);
   if (!tour) {
-    // const err = new AppError('No tour found with that ID', 404);
+    const err = new AppError('No tour found with that ID', 404);
     return next(err);
   }
   res.status(204).json({ status: 'true' });
 });
 
+// UPDATING TOUR
 exports.updateTour = catchAsync(async (req, res, next) => {
   const body = {
     name: req.body.name,
@@ -64,13 +70,14 @@ exports.updateTour = catchAsync(async (req, res, next) => {
   });
 
   if (!tour) {
-    // const err = new AppError('No tour found with that ID', 404);
+    const err = new AppError('No tour found with that ID', 404);
     return next(err);
   }
 
   res.status(200).json({ status: 'success', data: updatedTour });
 });
 
+// GETTING STATISTICS OF TOUR
 exports.getTourStats = catchAsync(async (req, res, next) => {
   const stats = await Tour.aggregate([
     {
@@ -97,6 +104,7 @@ exports.getTourStats = catchAsync(async (req, res, next) => {
   res.status(200).json({ status: 'success', stats });
 });
 
+// GETTING STATISTICS
 exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
   const plan = await Tour.aggregate([
     {
