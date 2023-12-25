@@ -27,12 +27,17 @@ const userSchema = mongoose.Schema({
     required: [true, 'Provide a confirm password'],
     // validate:
   },
+  passwordChangedAt: {
+    type: Date,
+    // default: Date.now(),
+  },
 });
 
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   this.password = await bcrypt.hash(this.password, 10);
-  console.log(this.password);
+
+  this.passwordConfirm = undefined;
   next();
 });
 
@@ -41,6 +46,19 @@ userSchema.methods.verifyPassword = async function (
   storedPassword
 ) {
   return await bcrypt.compare(enteredPassword, storedPassword);
+};
+
+userSchema.methods.changePasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimeStamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    );
+    console.log(changedTimeStamp, JWTTimestamp);
+    return JWTTimestamp < changedTimeStamp;
+  }
+
+  return false;
 };
 
 const User = mongoose.model('User', userSchema);
