@@ -3,7 +3,7 @@ const ApiFeatures = require('../utils/APIfeatures');
 const catchAsync = require('../utils/catchAsync.js');
 const AppError = require('../utils/appError');
 
-// FETCHING ALL TOURS
+// FETCNG ALL TOURS
 exports.getTours = catchAsync(async (req, res, next) => {
   const features = new ApiFeatures(Tour.find(), req.query)
     .filter()
@@ -22,7 +22,7 @@ exports.getTours = catchAsync(async (req, res, next) => {
   });
 });
 
-// FETCHING TOUR
+// FETCNG TOUR
 exports.getTour = catchAsync(async (req, res, next) => {
   const tour = await Tour.findById(req.params.id);
 

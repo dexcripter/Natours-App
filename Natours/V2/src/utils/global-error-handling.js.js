@@ -7,6 +7,12 @@ function handleCastErrorDB(err) {
   return operationalError;
 }
 
+function handleDuplicateErrorDB(err) {
+  const value = err.errmsg.match(/(["'])(\\?.)*?\1/).at(0);
+  const message = `Duplicate field value: ${value}. Please use another value`;
+  return new AppError(message, 400);
+}
+
 const sendErrDev = (res, err) => {
   return res.status(err.statusCode).json({
     status: err.status,
@@ -22,7 +28,6 @@ const sendProdError = (res, err) => {
       message: err.message,
     });
   } else {
-    // console.log(err);
     return res
       .status(500)
       .json({ status: 'error', message: 'Something went wrong' });
@@ -37,9 +42,8 @@ module.exports = (err, req, res, next) => {
     sendErrDev(res, err);
   } else if (process.env.NODE_ENV === 'production') {
     let error;
-    if (err.name === 'CastError') {
-      error = handleCastErrorDB(err);
-    }
+    if (err.name === 'CastError') error = handleCastErrorDB(err);
+    if ((err.code = 11000)) error = handleDuplicateErrorDB(err);
 
     sendProdError(res, error);
   }

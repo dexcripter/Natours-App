@@ -17,14 +17,9 @@ app.use(express.json());
 app.use('/api/v1/', version1);
 
 app.all('*', (req, res, next) => {
-  // const error = new Error(`Can't find ${req.originalUrl} on this server`);
-  // error.statusCode = 404;
-  // error.status = 'Not found';
-
   next(new AppError(`Can't find ${req.originalUrl} on this server`), 404);
 });
 
 app.use(globalErrorHandling);
 
-// exporting the app to server
 module.exports = app;
