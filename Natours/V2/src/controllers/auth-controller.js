@@ -13,9 +13,13 @@ const signToken = (id) => {
 
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create(req.body); /// bad practice though
-
+  const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
+  if (!token) return next(new AppError('Error generaing token'));
   res.status(201).json({
     status: 'success',
+    token,
     data: newUser,
   });
 });
@@ -61,4 +65,25 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   req.user = currentUser;
   next();
+});
+
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError('You do not have persissiom to perform this action', 403)
+      );
+    }
+    next();
+  };
+};
+
+exports.forgotPassword = catchAsync(async (req, res, next) => {
+  // get user from posted email
+  const user = await User.findOne({ email: req.body.email });
+
+  if (!user)
+    return next(new AppError('There is no user with this email address', 404));
+
+  const resetToken = createPasswordResetToken();
 });
