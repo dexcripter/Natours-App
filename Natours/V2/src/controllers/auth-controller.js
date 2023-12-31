@@ -153,3 +153,15 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     .status(201)
     .json({ status: 'success', token, message: 'password changed' });
 });
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  // const user = await User.findOne({ email: req.body.email }).select('password');
+  const user = await User.findById(req.user.id).select('password');
+
+  if (!(await user.verifyPassword(req.body.password, user.password)))
+    return next(new AppError('Incorrect password'));
+
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
+  await user.save();
+});
