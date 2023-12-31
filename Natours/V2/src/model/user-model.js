@@ -27,14 +27,17 @@ const userSchema = mongoose.Schema({
     type: String,
     required: [true, 'Provide a password'],
     minlength: 8,
+    select: false,
   },
   passwordConfirm: {
     type: String,
+    select: false,
     required: [true, 'Provide a confirm password'],
     // validate:
   },
   passwordChangedAt: {
     type: Date,
+    select: false,
     // default: Date.now(),
   },
   passwordResetToken: String,
