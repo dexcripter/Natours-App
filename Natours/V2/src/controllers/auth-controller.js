@@ -50,7 +50,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   if (!bearer.startsWith('Bearer') || !token) {
     return next(new AppError('Please sign in to access this route', 401));
   }
-  // validate the token
+  // validate the tosken
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
   req.decoded = decoded;
 
@@ -62,7 +62,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
 
   // check if the password has been changed
-  if (currentUser.changePasswordAfter(req.decoded.iat))
+  if (currentUser.changePasswordAfter(decoded.iat))
     return next(new AppError('The password has been changed, Please log in'));
 
   req.user = currentUser;
@@ -161,7 +161,11 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   if (!(await user.verifyPassword(req.body.password, user.password)))
     return next(new AppError('Incorrect password'));
 
-  user.password = req.body.password;
-  user.passwordConfirm = req.body.passwordConfirm;
+  user.password = req.body.newPassword;
+  user.passwordConfirm = req.body.newPasswordConfirm;
+
   await user.save();
+  res
+    .status(201)
+    .json({ status: 'success', message: 'Password changed successfully' });
 });
