@@ -2,6 +2,14 @@ const User = require('../model/user-model');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
+function filteredObj(obj, ...allowedFields) {
+  const newObject = {};
+  Object.keys(obj).forEach((el) => {
+    if (allowedFields.includes(el)) newObject[el] = obj[el];
+  });
+  return newObject;
+}
+
 exports.getAllUsers = catchAsync(async (req, res, next) => {
   const users = await User.find();
 
@@ -22,10 +30,18 @@ exports.updateMe = catchAsync(async (req, res, next) => {
       )
     );
 
-  const user = User.findById(req.user._id);
+  const filteredBody = filteredObj(req.body, 'name', 'email');
+
+  const udpatedUser = User.findByIdAndUpdate(req.user._id, filteredBody, {
+    new: true,
+    runValidators: true,
+  });
 
   res.status(200).json({
     status: 'success',
+    data: {
+      user: udpatedUser,
+    },
   });
 
   // update uesr document
