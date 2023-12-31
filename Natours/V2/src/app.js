@@ -3,6 +3,8 @@ const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+const xss = require('xss-clean');
+const mongoSanitize = require('express-mongo-sanitize');
 
 const globalErrorHandling = require('./utils/global-error-handling.js');
 const AppError = require('./utils/appError.js');
@@ -24,6 +26,12 @@ app.use(helmet());
 app.use('/api/v1', limiter);
 app.use(morgan('dev'));
 app.use(express.json({ limit: '10kb' }));
+
+// data sanitization against NosQL query injection
+app.use(mongoSanitize());
+
+// data sanitization against XSS
+app.use(xss());
 
 // routes
 app.use('/api/v1/', version1);
