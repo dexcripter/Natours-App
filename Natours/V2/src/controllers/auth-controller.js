@@ -13,17 +13,26 @@ const signToken = (id) => {
   });
 };
 
-exports.signup = catchAsync(async (req, res, next) => {
-  const newUser = await User.create(req.body); /// bad practice though
-  const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  });
-  if (!token) return next(new AppError('Error generaing token'));
-  res.status(201).json({
+const createSendToken = (user, statusCode, res) => {
+  const token = signToken(user._id);
+
+  res.status(statusCode).json({
     status: 'success',
     token,
-    data: newUser,
+    data: user,
   });
+};
+
+exports.signup = catchAsync(async (req, res, next) => {
+  const newUser = await User.create(req.body); /// bad practice though
+
+  createSendToken(newUser, 201, res);
+
+  // res.status(201).json({
+  //   status: 'success',
+  //   token,
+  //   data: newUser,
+  // });
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -37,10 +46,12 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   // response
-  const token = signToken(user._id);
-  return res
-    .status(200)
-    .json({ status: 'success', token, message: 'User logged in' });
+  // const token = signToken(user._id);
+  // return res
+  //   .status(200)
+  //   .json({ status: 'success', token, message: 'User logged in' });
+
+  createSendToken(user, 200, res);
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -143,15 +154,16 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
   await user.save();
 
-  const token = signToken(user._id);
+  // const token = signToken(user._id);
 
-  // update changedPasswordAt property for the user
+  // // update changedPasswordAt property for the user
 
-  // log the user in
+  // // log the user in
 
-  res
-    .status(201)
-    .json({ status: 'success', token, message: 'password changed' });
+  // res
+  //   .status(201)
+  //   .json({ status: 'success', token, message: 'password changed' });
+  createSendToken(user, 201, res);
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
