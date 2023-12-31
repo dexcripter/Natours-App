@@ -43,6 +43,12 @@ exports.updateMe = catchAsync(async (req, res, next) => {
       user: udpatedUser,
     },
   });
+});
 
-  // update uesr document
+exports.deleteMe = catchAsync(async (req, res, next) => {
+  await User.findByIdAndUpdate(req.user.id, { active: false });
+
+  res.status(204).json({
+    status: 'success',
+  });
 });

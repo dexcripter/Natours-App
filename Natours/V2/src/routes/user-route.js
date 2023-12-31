@@ -1,5 +1,9 @@
 const express = require('express');
-const { getAllUsers, updateMe } = require('../controllers/user-controller');
+const {
+  getAllUsers,
+  updateMe,
+  deleteMe,
+} = require('../controllers/user-controller');
 const {
   signup,
   login,
@@ -17,6 +21,9 @@ Router.route('/forgotPassword').post(forgotPassword);
 Router.route('/resetPassword/:token').patch(resetPassword);
 Router.route('/updateme').patch(protect, updateMe);
 
-// Router.route('/').get(protect, updateMe);
+Router.route('/')
+  .post(protect, updateMe)
+  .delete(protect, deleteMe)
+  .get(protect, getAllUsers);
 
 module.exports = Router;
