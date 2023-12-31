@@ -1,11 +1,12 @@
 // core packages
 const express = require('express');
 const morgan = require('morgan');
-
 const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 
 const globalErrorHandling = require('./utils/global-error-handling.js');
 const AppError = require('./utils/appError.js');
+const app = express();
 
 // versioning the api
 const version1 = require('./versioning/versionone');
@@ -19,10 +20,10 @@ const limiter = rateLimit({
 });
 
 // middlewares
-const app = express();
+app.use(helmet());
 app.use('/api/v1', limiter);
 app.use(morgan('dev'));
-app.use(express.json());
+app.use(express.json({ limit: '10kb' }));
 
 // routes
 app.use('/api/v1/', version1);
