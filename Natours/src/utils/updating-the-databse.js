@@ -6,7 +6,7 @@ const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../../config.env') });
 
 const tour = JSON.parse(
-  fs.readFileSync('../dev-data/data/tours-simple.json', 'utf-8')
+  fs.readFileSync('../dev-data/data/tours.json', 'utf-8')
 );
 
 mongoose
