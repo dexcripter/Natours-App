@@ -16,6 +16,10 @@ exports.getAllReviews = catchAsync(async (req, res, next) => {
 
 // create new reviews
 exports.createReview = catchAsync(async (req, res, next) => {
+  // nested routes
+  if (!req.body.tour) req.body.tour = req.params.tourId;
+  if (!req.body.user) req.body.user = req.user.id;
+
   const body = {
     review: req.body.review,
     rating: req.body.rating,

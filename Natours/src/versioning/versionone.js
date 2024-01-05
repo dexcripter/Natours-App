@@ -6,6 +6,6 @@ const reviews = require('../routes/review-route');
 
 app.use('/tours', tourRoutes);
 app.use('/users', userRoutes);
-app.use('reviews', reviews);
+// app.use('reviews', reviews);
 
 module.exports = app;
