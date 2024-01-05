@@ -118,6 +118,12 @@ tourSchema.virtual('naira').get(function () {
   return this.price * 1150;
 });
 
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id',
+});
+
 // document middleware:
 tourSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
