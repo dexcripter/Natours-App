@@ -114,6 +114,9 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
+// tourSchema.index({price:1}) // using one parameter
+tourSchema.index({ price: 1, ratingsAverage: -1 }); // using more than one parameter for indexing
+
 tourSchema.virtual('naira').get(function () {
   return this.price * 1150;
 });
