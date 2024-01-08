@@ -24,6 +24,7 @@ const tourSchema = new mongoose.Schema(
       min: 1,
       max: 5,
       default: 3.5,
+      set: (val) => Math.round(val * 10) / 10,
     },
     price: {
       type: Number,

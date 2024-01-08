@@ -6,10 +6,17 @@ const helmet = require('helmet');
 const xss = require('xss-clean');
 const mongoSanitize = require('express-mongo-sanitize');
 const hpp = require('hpp');
+const pug = require('pug');
+const path = require('path');
+const viewRouter = require('./routes/view-route.js');
 
 const globalErrorHandling = require('./utils/global-error-handling.js');
 const AppError = require('./utils/appError.js');
 const app = express();
+
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // versioning the api
 const version1 = require('./versioning/versionone');
@@ -42,6 +49,7 @@ app.use(
 );
 
 // routes
+app.use('/', viewRouter);
 app.use('/api/v1/', version1);
 
 app.all('*', (req, res, next) => {
