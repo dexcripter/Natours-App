@@ -1,9 +1,18 @@
 const express = require('express');
-const Router = express.Router();
+const viewsController = require('../controllers/views-controller');
+const authController = require('../controllers/auth-controller');
 
-const { getTour, getOverview } = require('../controllers/views-controller');
+const router = express.Router();
 
-Router.route('/').get(getOverview);
-Router.route('/tour').get(getTour);
+router.get('/', viewsController.getOverview);
+router.get('/tour/:slug', authController.protect, viewsController.getTour);
+router.get('/login', viewsController.getLoginForm);
+router.get('/me', authController.protect, viewsController.getAccount);
 
-module.exports = Router;
+router.post(
+  '/submit-user-data',
+  authController.protect,
+  viewsController.updateUserData
+);
+
+module.exports = router;
